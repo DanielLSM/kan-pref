@@ -491,3 +491,7 @@ class LBFGS(Optimizer):
         state['prev_loss'] = prev_loss
 
         return orig_loss
+
+if __name__=='__main__':
+    optimizer  = LBFGS()
+    optimizer.zero_grad()

@@ -8,6 +8,7 @@ import pickle as pkl
 from torch.utils.data import TensorDataset, DataLoader
 
 from pref_kan.oracle import HumanCritic
+# from pref_kan.kan_oracle import HumanCritic
 
 def load_pickle(name):
     with open(name + ".pkl", 'rb') as handle:
@@ -33,6 +34,9 @@ def create_dataloader(pairs):
 
 def test_accuracy(dataset, oracle):
     for step, (o1, o2, prefs) in enumerate(dataset):
+            o1 = o1.to('cuda')  # Move input tensors to the device
+            o2 = o2.to('cuda')
+            prefs = prefs.to('cuda')
             o1_unrolled = torch.reshape(o1, [-1, oracle.obs_size[0] + oracle.action_size])
             o2_unrolled = torch.reshape(o2, [-1, oracle.obs_size[0] + oracle.action_size])
             r1_unrolled = oracle.reward_model(o1_unrolled)
@@ -55,8 +59,8 @@ def test_accuracy(dataset, oracle):
 
 
 env_id = "HalfCheetah-v3"
-data_set_name = "/rl_zoopairs_cheetahbuffer"
-sizes_data_set_name = "/rl_zoopairs_size_cheetahbuffer"
+data_set_name = "/pref_kan/data/cheetah/rl_zoopairs_cheetahbuffer"
+sizes_data_set_name = "/pref_kan/data/cheetah/rl_zoopairs_size_cheetahbuffer"
 path = os.getcwd()
 print(path)
 
