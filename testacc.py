@@ -7,7 +7,7 @@ import pickle as pkl
 
 from torch.utils.data import TensorDataset, DataLoader
 
-from pref.oracle import HumanCritic
+from pref_kan.oracle import HumanCritic
 
 def load_pickle(name):
     with open(name + ".pkl", 'rb') as handle:
