@@ -63,6 +63,50 @@ pip install git+https://github.com/KindXiaoming/pykan.git  # For GitHub installa
 pip install pykan  # For PyPI installation
 ```
 
+## Installation of preference learning part
+```python
+apt-get -y update \
+    && apt-get -y install \
+    ffmpeg \
+    swig \
+    build-essential
+
+
+pip install -r /tmp/requirements2.txt
+pip install highway-env>=1.7.1
+
+
+apt-get -y update && \
+apt-get install -y git
+
+
+pip install git+https://github.com/rlworkgroup/metaworld.git@04be337a12305e393c0caf0cbf5ec7755c7c8feb
+
+apt-get install -y wget
+mkdir -p /root/.mujoco \
+    wget https://mujoco.org/download/mujoco210-linux-x86_64.tar.gz -O mujoco.tar.gz \
+    tar -xf mujoco.tar.gz -C /root/.mujoco \
+    rm mujoco.tar.gz
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/.mujoco/mujoco210/bin
+pip install 'cython<3'
+apt-get update \
+  && apt-get install -y gcc \
+  && apt-get install -y build-essential \
+  && apt-get install -y python3-dev \
+  && apt-get install -y libosmesa6-dev \
+  && apt-get install -y libopengl0 \
+  && apt-get install -y libglew-dev \
+  && apt-get install -y libc-dev \
+  && apt-get install -y libgl1-mesa-glx libglfw3 \
+  && apt-get install -y wget \
+  && apt-get install -y patchelf \
+  && rm -rf /var/lib/apt/lists/*
+
+pip install tensorboardX && pip install pymongo && pip install -U gym==0.26.2 && pip install mujoco==2.3.3
+
+pip install protobuf==3.20.1
+```
+
 ## Computation requirements
 
 Examples in [tutorials](tutorials) are runnable on a single CPU typically less than 10 minutes. All examples in the paper are runnable on a single CPU in less than one day. Training KANs for PDE is the most expensive and may take hours to days on a single CPU. We use CPUs to train our models because we carried out parameter sweeps (both for MLPs and KANs) to obtain Pareto Frontiers. There are thousands of small models which is why we use CPUs rather than GPUs. Admittedly, our problem scales are smaller than typical machine learning tasks, but are typical for science-related tasks. In case the scale of your task is large, it is advisable to use GPUs.
