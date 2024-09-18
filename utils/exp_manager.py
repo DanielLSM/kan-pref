@@ -31,7 +31,7 @@ from sb3_contrib.common.vec_env import AsyncEval
 # For using HER with GoalEnv
 from stable_baselines3 import HerReplayBuffer
 from stable_baselines3.common.base_class import BaseAlgorithm
-from stable_baselines3.common.buffers import RolloutBufferModerate
+from stable_baselines3.common.buffers import RolloutBuffer
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, EvalCallback, ProgressBarCallback
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.noise import NormalActionNoise, OrnsteinUhlenbeckActionNoise
@@ -221,35 +221,15 @@ class ExperimentManager:
             env.close()
             return None
         else:
-            if constrained:
-                # Train an agent from scratch
-                model = ALGOS[self.algo](
-                    env=env,
-                    tensorboard_log=self.tensorboard_log,
-                    seed=self.seed,
-                    verbose=self.verbose,
-                    device=self.device,
-                    rollout_buffer_class=RolloutBufferModerate,
-                    hc=self.hc,
-                    constrained=constrained,
-                    **self._hyperparams,
-                )
-
-                #self.hc.load_reward_model("./pretrain/cheetah/rewardmodel")
-                #self.hc.load_cost_model("./pretrain/cheetah/costmodel")
-                #self.hc.load_buffers("./pretrain/cheetah/")
-                print("Entered constrained successfully")
-            else:
-                # Train an agent from scratch
-                model = ALGOS[self.algo](
-                    env=env,
-                    tensorboard_log=self.tensorboard_log,
-                    seed=self.seed,
-                    verbose=self.verbose,
-                    device=self.device,
-                    hc=self.hc,
-                    **self._hyperparams,
-                )
+            # Train an agent from scratch
+            model = ALGOS[self.algo](
+                env=env,
+                tensorboard_log=self.tensorboard_log,
+                seed=self.seed,
+                verbose=self.verbose,
+                device=self.device,
+                **self._hyperparams,
+            )
 
         self._save_config(saved_hyperparams)
         return model, saved_hyperparams

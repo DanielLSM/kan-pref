@@ -107,6 +107,14 @@ pip install tensorboardX && pip install pymongo && pip install -U gym==0.26.2 &&
 pip install protobuf==3.20.1
 ```
 
+## Running preference learning
+You can run preference learning with KANs simply by running the script:
+```
+./scripts/run_training_pref.sh
+```
+Inside the script you can change hyperparameters such as environment, model sizes, preferences, etc.
+
+I haven't had time to implement a way to switch between regular preferences and KANs. It can easily be done by just adding a flag and either create an MLP or a KAN network. Rest should be the same?
 ## Computation requirements
 
 Examples in [tutorials](tutorials) are runnable on a single CPU typically less than 10 minutes. All examples in the paper are runnable on a single CPU in less than one day. Training KANs for PDE is the most expensive and may take hours to days on a single CPU. We use CPUs to train our models because we carried out parameter sweeps (both for MLPs and KANs) to obtain Pareto Frontiers. There are thousands of small models which is why we use CPUs rather than GPUs. Admittedly, our problem scales are smaller than typical machine learning tasks, but are typical for science-related tasks. In case the scale of your task is large, it is advisable to use GPUs.
