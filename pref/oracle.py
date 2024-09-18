@@ -2,40 +2,12 @@ import numpy as np
 import torch
 import wandb
 from numpy.random import choice
-import torch
 from torch import nn
 
 import random
 from random import sample
-from kan.LBFGS import LBFGS
-from kan import *
 from pref.utils import save_pickle, load_pickle
-
-
-def weight_reset(m):
-    if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
-        m.reset_parameters()
-
-
-def mlp(sizes, activation, output_activation=nn.Identity):
-    layers = []
-    for j in range(len(sizes) - 1):
-        act = activation if j < len(sizes) - 2 else output_activation
-        layers += [nn.Linear(sizes[j], sizes[j + 1]), act()]
-        if j < len(sizes) - 2:
-            layers += [nn.Dropout(0.5 if j > 0 else 0.2)]
-    return nn.Sequential(*layers)
-
-
-class HumanRewardNetwork(nn.Module):
-    def __init__(self, obs_size, hidden_sizes=(64, 64)):
-        super(HumanRewardNetwork, self).__init__()
-        self.linear_relu_stack = mlp([obs_size] + list(hidden_sizes) + [1], activation=nn.LeakyReLU)
-        self.tanh = nn.Tanh()
-
-    def forward(self, x):
-        logits = self.linear_relu_stack(x)
-        return self.tanh(logits)
+from kan import *
 
 
 class HumanCritic:
@@ -48,7 +20,7 @@ class HumanCritic:
                  action_size=2,
                  maximum_segment_buffer=1000000,
                  maximum_preference_buffer=3500,
-                 training_epochs=200,
+                 training_epochs=10,
                  batch_size=32,
                  hidden_sizes=(64, 64),
                  traj_k_lenght=100,
@@ -79,8 +51,7 @@ class HumanCritic:
         self.SIZES = hidden_sizes
         self.weight_decay = weight_decay
         self.learning_rate = learning_rate
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.init_model()  # creates model
+        self.model = KAN(width=[obs_size,obs_size,1], grid=3, k=3, seed=seed, device=device)
 
         # === DATASET TRAINING ===
         self.training_epochs = training_epochs
@@ -147,17 +118,10 @@ class HumanCritic:
         if delete:
             del self.reward_model
             del self.optimizer
-        # self.reward_model = HumanRewardNetwork(self.obs_size[0] + self.action_size, self.SIZES)
-        # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        input = self.obs_size[0] + self.action_size
-        output = 1
-        self.reward_model = KAN(width=[input,2,2,output], grid=3, k=3, device=self.device)
-
+        self.reward_model = HumanRewardNetwork(self.obs_size[0] + self.action_size, self.SIZES)
 
         # ==OPTIMIZER==
         self.optimizer = torch.optim.Adam(self.reward_model.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay)
-        # self.optimizer = LBFGS(self.reward_model.parameters(), lr=self.learning_rate)
-
 
 
     def clear_segment(self):
@@ -210,86 +174,6 @@ class HumanCritic:
         self.pairs = load_pickle(path + "critical_points_" + env_name + load_name)
         self.pairs_size = load_pickle(path + "critical_points_size_" + env_name + load_name)
         self.pairs_index = load_pickle(path + "critical_points_index_" + env_name + load_name)
-
-
-    def train_dataset(self, dataset, meta_data, epochs_override=-1):
-
-        epochs = epochs_override if epochs_override != -1 else self.training_epochs
-
-        self.reward_model.train(True)
-        avg_loss = 0
-        meta_data = {}
-        episode_loss = 0
-
-        for epoch in range(1, epochs + 1):
-
-            running_loss = 0
-            running_accuracy = 0
-
-            for step, (o1, o2, prefs) in enumerate(dataset):
-                o1 = o1.to(self.device)  # Move input tensors to the device
-                o2 = o2.to(self.device)
-                prefs = prefs.to(self.device)
-                
-                self.optimizer.zero_grad()
-                o1_unrolled = torch.reshape(o1, [-1, self.obs_size[0] + self.action_size])
-                o2_unrolled = torch.reshape(o2, [-1, self.obs_size[0] + self.action_size])
-                r1_unrolled = self.reward_model(o1_unrolled)
-                r2_unrolled = self.reward_model(o2_unrolled)
-
-                r1_rolled = torch.reshape(r1_unrolled, o1.shape[0:2])
-                r2_rolled = torch.reshape(r2_unrolled, o2.shape[0:2])
-
-                rs1 = torch.sum(r1_rolled, dim=1)
-                rs2 = torch.sum(r2_rolled, dim=1)
-                rss = torch.stack([rs1, rs2])
-                rss = torch.t(rss)
-
-                preds = torch.softmax(rss, dim=0)
-                preds_correct = torch.eq(torch.argmax(prefs, 1), torch.argmax(preds, 1)).type(torch.float32)
-                accuracy = torch.mean(preds_correct)
-
-                loss_pref = -torch.sum(torch.log(preds[prefs == 1]))
-                loss = loss_pref
-
-                if self.device == 'cpu':
-                    running_loss += loss.detach().numpy().item()
-                else:
-                    running_loss += loss.detach().cpu().numpy().item()
-
-                running_accuracy += accuracy
-
-
-                reporting_interval = (self.training_epochs // 10) if self.training_epochs >= 10 else 1
-                if epoch % reporting_interval == 0 and step == len(dataset) - 1:
-                    print("Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (epoch, step, float(loss), float(accuracy)))
-                    print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
-
-                loss.backward()
-                self.optimizer.step()
-
-            episode_loss = (running_loss / len(dataset))
-            avg_loss += episode_loss
-            episode_accuracy = (running_accuracy / len(dataset))
-            if self.writer:
-                self.writer.add_scalar("reward/loss", episode_loss, self.updates)
-                self.writer.add_scalar("reward/accuracy", episode_accuracy, self.updates)
-            if wandb.run is not None:
-                wandb.log({"reward/loss": episode_loss,
-                           "reward/accuracy": episode_accuracy,
-                           "reward/updates": self.updates
-                           })
-            self.updates += 1
-
-        avg_loss = avg_loss / epochs
-        if (avg_loss - episode_loss) < 2.5:
-            print("episode_loss:" + str(episode_loss))
-            print("avg_loss:" + str(avg_loss))
-            meta_data['improved'] = False
-        else:
-            meta_data['improved'] = True
-        self.reward_model.train(False)
-        return meta_data
 
 
     def train_dataset_with_critical_points(self, dataset, meta_data, epochs_override=-1):
@@ -417,6 +301,7 @@ class HumanCritic:
         critical_points = self.generate_critical_point_segment(critical_points)
         prefs = np.asarray(prefs).astype('float32')
         return o1, o2, prefs, critical_points
+
 
     def generate_critical_point_segment(self, critical_points):
         rolled_critical_points = [[[0, 0] for _ in range(self.segments_max_k_len)] for _ in range(len(critical_points))]
