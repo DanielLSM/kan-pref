@@ -50,7 +50,7 @@ class HumanCritic:
                  maximum_preference_buffer=3500,
                  training_epochs=200,
                  batch_size=32,
-                 hidden_sizes=(64, 64),
+                 hidden_sizes=(2,2),
                  traj_k_lenght=100,
                  weight_decay=0.0,
                  learning_rate=0.0003,
@@ -58,7 +58,8 @@ class HumanCritic:
                  env_name=None,
                  custom_oracle=False,
                  seed=12345,
-                 epsilon=0.1):
+                 epsilon=0.1,
+                 verbose=True):
         print("created")
         random.seed(seed)
         torch.manual_seed(seed)
@@ -81,6 +82,8 @@ class HumanCritic:
         self.learning_rate = learning_rate
         # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.device = 'cpu'
+        self.model_name = "KAN"
+        self.verbose = verbose
         self.init_model()  # creates model
 
         # === DATASET TRAINING ===
@@ -151,8 +154,7 @@ class HumanCritic:
         # self.reward_model = HumanRewardNetwork(self.obs_size[0] + self.action_size, self.SIZES)
         # device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         input = self.obs_size[0] + self.action_size
-        output = 1
-        self.reward_model = KAN(width=[input,2,2,output], grid=3, k=3, device=self.device)
+        self.reward_model = KAN(width=[input] + list(self.SIZES) + [1], grid=3, k=3, device=self.device)
 
 
         # ==OPTIMIZER==
@@ -261,10 +263,10 @@ class HumanCritic:
                 running_accuracy += accuracy
 
 
-                reporting_interval = (self.training_epochs // 10) if self.training_epochs >= 10 else 1
+                reporting_interval = (self.training_epochs // 4) if self.training_epochs >= 10 else 1
                 if epoch % reporting_interval == 0 and step == len(dataset) - 1:
-                    print("Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (epoch, step, float(loss), float(accuracy)))
-                    print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
+                    print("Model:%s, Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (self.model_name, epoch, step, float(loss), float(accuracy)))
+                    print("Seen: %s samples" % ((step + 1) * self.batch_size))
 
                 loss.backward()
                 self.optimizer.step()
@@ -291,7 +293,6 @@ class HumanCritic:
             meta_data['improved'] = True
         self.reward_model.train(False)
         return meta_data
-
 
     def train_dataset_with_critical_points(self, dataset, meta_data, epochs_override=-1):
         max_regularization_sum = 0
@@ -359,11 +360,11 @@ class HumanCritic:
                 running_loss += loss.detach().numpy().item()
                 running_accuracy += accuracy
 
-
-                reporting_interval = (self.training_epochs // 10) if self.training_epochs >= 10 else 1
-                if epoch % reporting_interval == 0 and step == len(dataset) - 1:
-                    print("Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (epoch, step, float(loss), float(accuracy)))
-                    print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
+                if self.verbose:
+                    reporting_interval = (self.training_epochs // 10) if self.training_epochs >= 10 else 1
+                    if epoch % reporting_interval == 0 and step == len(dataset) - 1:
+                        print("Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (epoch, step, float(loss), float(accuracy)))
+                        print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
 
                 loss.backward()
                 self.optimizer.step()
@@ -390,6 +391,7 @@ class HumanCritic:
             meta_data['improved'] = True
         self.reward_model.train(False)
         return meta_data
+    
 
     def get_critical_points_rewards(self, critical_points, prefs, r1_rolled, r2_rolled):
         critical_points_discounted_reward_punishment = torch.zeros_like(r1_rolled)

@@ -55,7 +55,8 @@ class HumanCritic:
                  env_name=None,
                  custom_oracle=False,
                  seed=12345,
-                 epsilon=0.1):
+                 epsilon=0.1,
+                 verbose=True):
         print("created")
         random.seed(seed)
         torch.manual_seed(seed)
@@ -76,6 +77,8 @@ class HumanCritic:
         self.SIZES = hidden_sizes
         self.weight_decay = weight_decay
         self.learning_rate = learning_rate
+        self.model_name = "MLP"
+        self.verbose = verbose
         self.init_model()  # creates model
 
         # === DATASET TRAINING ===
@@ -241,10 +244,11 @@ class HumanCritic:
                 running_accuracy += accuracy
 
 
-                reporting_interval = (self.training_epochs // 10) if self.training_epochs >= 10 else 1
-                if epoch % reporting_interval == 0 and step == len(dataset) - 1:
-                    print("Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (epoch, step, float(loss), float(accuracy)))
-                    print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
+                if self.verbose:
+                    reporting_interval = (self.training_epochs // 4) if self.training_epochs >= 10 else 1
+                    if epoch % reporting_interval == 0 and step == len(dataset) - 1:
+                        print("Model:%s, Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (self.model_name, epoch, step, float(loss), float(accuracy)))
+                        print("Seen so far: %s samples" % ((step + 1) * self.batch_size))
 
                 loss.backward()
                 self.optimizer.step()

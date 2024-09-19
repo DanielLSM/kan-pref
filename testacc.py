@@ -7,8 +7,8 @@ import pickle as pkl
 
 from torch.utils.data import TensorDataset, DataLoader
 
-from pref_kan.oracle import HumanCritic
-# from pref_kan.kan_oracle import HumanCritic
+# from pref_kan.oracle import HumanCritic
+from pref_kan.kan_oracle import HumanCritic
 
 def load_pickle(name):
     with open(name + ".pkl", 'rb') as handle:
@@ -33,6 +33,9 @@ def create_dataloader(pairs):
     return my_dataloader
 
 def test_accuracy(dataset, oracle):
+    print("Reward model:{}".format(oracle.reward_model))
+    total_params = sum(p.numel() for p in oracle.reward_model.parameters())
+    print("Number of parameters:{}".format(total_params))
     for step, (o1, o2, prefs) in enumerate(dataset):
             o1 = o1.to('cpu')  # Move input tensors to the device
             o2 = o2.to('cpu')
