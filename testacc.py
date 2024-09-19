@@ -34,9 +34,9 @@ def create_dataloader(pairs):
 
 def test_accuracy(dataset, oracle):
     for step, (o1, o2, prefs) in enumerate(dataset):
-            o1 = o1.to('cuda')  # Move input tensors to the device
-            o2 = o2.to('cuda')
-            prefs = prefs.to('cuda')
+            o1 = o1.to('cpu')  # Move input tensors to the device
+            o2 = o2.to('cpu')
+            prefs = prefs.to('cpu')
             o1_unrolled = torch.reshape(o1, [-1, oracle.obs_size[0] + oracle.action_size])
             o2_unrolled = torch.reshape(o2, [-1, oracle.obs_size[0] + oracle.action_size])
             r1_unrolled = oracle.reward_model(o1_unrolled)

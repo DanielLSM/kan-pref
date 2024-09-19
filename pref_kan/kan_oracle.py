@@ -79,7 +79,8 @@ class HumanCritic:
         self.SIZES = hidden_sizes
         self.weight_decay = weight_decay
         self.learning_rate = learning_rate
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = 'cpu'
         self.init_model()  # creates model
 
         # === DATASET TRAINING ===
