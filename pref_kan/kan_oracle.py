@@ -262,11 +262,11 @@ class HumanCritic:
 
                 running_accuracy += accuracy
 
-
-                reporting_interval = (self.training_epochs // 4) if self.training_epochs >= 10 else 1
-                if epoch % reporting_interval == 0 and step == len(dataset) - 1:
-                    print("Model:%s, Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (self.model_name, epoch, step, float(loss), float(accuracy)))
-                    print("Seen: %s samples" % ((step + 1) * self.batch_size))
+                if self.verbose:
+                    reporting_interval = (self.training_epochs // 4) if self.training_epochs >= 10 else 1
+                    if epoch % reporting_interval == 0 and step == len(dataset) - 1:
+                        print("Model:%s, Epoch %d , Training loss (for one batch) at step %d: %.4f, Accuracy %.4f" % (self.model_name, epoch, step, float(loss), float(accuracy)))
+                        print("Seen: %s samples" % ((step + 1) * self.batch_size))
 
                 loss.backward()
                 self.optimizer.step()
