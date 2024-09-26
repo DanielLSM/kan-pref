@@ -15,7 +15,7 @@ file="/tmp/.X11-unix/X$display"
 Xvfb :1 -screen 0 1024x768x24 &
 export DISPLAY=:1
 
-cd /root/code/rl_zoo/
+cd /home/mambauser/code/rl_zoo3/
 
 exec "$@"
 

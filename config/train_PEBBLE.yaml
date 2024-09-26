@@ -34,6 +34,11 @@ model_name: walker_reward_model
 model_path: /root/code/rl_zoo
 rank: 16
 
+#KAN specific
+width: [1,1,1]
+grid: 3
+k: 3
+
 using_surf: true
 
 # scheduling
@@ -45,7 +50,7 @@ replay_buffer_capacity: ${num_train_steps}
 # evaluation config
 eval_frequency: 10000
 num_eval_episodes: 20
-device: cpu
+device: cuda
 
 # logger
 log_frequency: 10000

@@ -18,7 +18,7 @@ from kan import KAN
 from scipy.stats import norm
 import copy
 
-device = 'cpu'
+device = 'cuda'
 
 def gen_net(in_size=1, out_size=1, H=128, n_layers=3, activation='tanh', use_lora=False, rank=16, lora_alpha=16):
     net = []
@@ -107,6 +107,9 @@ class RewardModel:
                  rank=16,
                  model_name=None,
                  lora_alpha=16,
+                 width=[1,1,1],
+                 k=3,
+                 grid=3,
                  model_path="/root/code/rl_zoo"):
         
         # train data is trajectories, must process to sa and s..   
@@ -121,6 +124,13 @@ class RewardModel:
         self.max_size = max_size
         self.activation = activation
         self.size_segment = size_segment
+
+        width.insert(0, self.ds + self.da) # Input size
+        width.append(1) #output size
+        print(width)
+        self.width = width
+        self.k = k
+        self.grid = grid
         
         self.capacity = int(capacity)
 
@@ -201,7 +211,7 @@ class RewardModel:
         
     def construct_ensemble(self):
         for i in range(self.de):
-            model = KAN(width=[self.ds + self.da,2,2,1], grid=3, k=3).to("cpu")
+            model = KAN(width=self.width, grid=self.grid, k=self.k).to("cpu")
             self.ensemble.append(model)
             self.paramlst.extend(model.parameters())
 
