@@ -1,0 +1,207 @@
+{
+    "os": "Linux-6.8.0-40-generic-x86_64-with-glibc2.35",
+    "python": "3.9.7",
+    "heartbeatAt": "2024-09-25T22:33:17.437295",
+    "startedAt": "2024-09-25T22:33:16.997992",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "<python with no main file>",
+    "codePathLocal": null,
+    "git": {
+        "remote": "git@github.com:DanielLSM/kan-pref.git",
+        "commit": "8e50df380a480a1a91434724b1918f3fd4c8405a"
+    },
+    "email": "daniellsmarta@gmail.com",
+    "root": "/home/daniel/dev/kan-pref",
+    "host": "medusa",
+    "username": "daniel",
+    "executable": "/home/daniel/software/anaconda3/envs/kan/bin/python",
+    "cpu_count": 16,
+    "cpu_count_logical": 32,
+    "cpu_freq": {
+        "current": 3.1028125000000006,
+        "min": 2200.0,
+        "max": 3400.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.046,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.675,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.879,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.905,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.868,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.599,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.879,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.879,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.87,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.476,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.08,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.609,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.903,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.014,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.286,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.879,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.207,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.228,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 2.2,
+            "min": 2200.0,
+            "max": 3400.0
+        },
+        {
+            "current": 3.601,
+            "min": 2200.0,
+            "max": 3400.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.3232879638672,
+            "used": 85.84457015991211
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 3080",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3080",
+            "memory_total": 10737418240
+        }
+    ],
+    "memory": {
+        "total": 31.248889923095703
+    }
+}

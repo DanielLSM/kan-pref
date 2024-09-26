@@ -11,6 +11,8 @@ molecule
 expressiveness
 figures
 molecule
+outputs
+exp
 
 #my ignores
 model

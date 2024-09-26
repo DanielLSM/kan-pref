@@ -1,0 +1,22 @@
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Current SDK version is 0.17.9
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Configure stats pid to 85950
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Loading settings from /home/daniel/.config/wandb/settings
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Loading settings from /home/daniel/dev/kan-pref/pref_kan/notebooks/wandb/settings
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Loading settings from environment variables: {}
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Applying setup settings: {'_disable_service': False}
+2024-09-26 00:29:28,307 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Inferring run settings from compute environment: {'program': '<python with no main file>'}
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Applying login settings: {}
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_setup.py:_flush():77] Applying login settings: {'api_key': '***REDACTED***'}
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:_log_setup():524] Logging user logs to /home/daniel/dev/kan-pref/pref_kan/notebooks/wandb/run-20240926_002928-5qm1w0yu/logs/debug.log
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:_log_setup():525] Logging internal logs to /home/daniel/dev/kan-pref/pref_kan/notebooks/wandb/run-20240926_002928-5qm1w0yu/logs/debug-internal.log
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:init():608] calling init triggers
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:init():615] wandb.init called with sweep_config: {}
+config: {'learning_rate': 0.02, 'entity': 'dlsmarta', 'architecture': 'CNN', 'dataset': 'CIFAR-100', 'epochs': 10}
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:init():658] starting backend
+2024-09-26 00:29:28,308 INFO    MainThread:85950 [wandb_init.py:init():662] setting up manager
+2024-09-26 00:29:28,310 INFO    MainThread:85950 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2024-09-26 00:29:28,311 INFO    MainThread:85950 [wandb_init.py:init():670] backend started and connected
+2024-09-26 00:29:28,314 INFO    MainThread:85950 [wandb_run.py:_label_probe_notebook():1344] probe notebook
+2024-09-26 00:29:28,314 INFO    MainThread:85950 [wandb_run.py:_label_probe_notebook():1354] Unable to probe notebook: 'NoneType' object has no attribute 'get'
+2024-09-26 00:29:28,314 INFO    MainThread:85950 [wandb_init.py:init():768] updated telemetry
+2024-09-26 00:29:28,323 INFO    MainThread:85950 [wandb_init.py:init():801] communicating run to backend with 90.0 second timeout
