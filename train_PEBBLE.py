@@ -70,7 +70,7 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="a8dd840ee7e392351881c44f60d2d22d7c3a1352")
+        wandb.login(key="062e6f1457bb47fd3c8c6b4aa043be1dd78e06b3")
         run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
@@ -82,7 +82,7 @@ class Workspace(object):
         run = wandb.init(
             name=run_name,
             project="PrefLearn",
-            entity="sholk",
+            entity="dlsmarta",
             config=config,
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
             monitor_gym=True  # auto-upload the videos of agents playing the game
