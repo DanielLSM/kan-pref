@@ -34,6 +34,11 @@ model_name: walker_reward_model
 model_path: /root/code/rl_zoo
 rank: 16
 
+#KAN specific
+width: [1,1,1]
+grid: 3
+k: 3
+
 using_surf: true
 
 # scheduling

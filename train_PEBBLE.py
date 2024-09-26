@@ -70,14 +70,13 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="062e6f1457bb47fd3c8c6b4aa043be1dd78e06b3")
+        wandb.login(key="as")
         run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
-                  "use_lora": cfg.use_lora,
-                  "using_surf": cfg.using_surf,
-                  "metric": "speed",
-                  "finetune": "cofinetune"}
+                  "param_k": cfg.k,
+                  "param_grid": cfg.grid,
+                  "param_width": cfg.width}
 
         run = wandb.init(
             name=run_name,
@@ -87,7 +86,10 @@ class Workspace(object):
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
             monitor_gym=True  # auto-upload the videos of agents playing the game
         )
-
+        print(cfg.k)
+        print(type(cfg.k))
+        print(cfg.grid)
+        print(type(cfg.grid))
         # instantiating the reward model
         self.reward_model = RewardModel(
             self.env.observation_space.shape[0],
@@ -108,6 +110,9 @@ class Workspace(object):
             use_lora=self.use_lora,
             rank=cfg.rank,
             model_name=self.model_name,
+            width=cfg.width,
+            grid=cfg.grid,
+            k=cfg.k,
             model_path=cfg.model_path)
         
     def evaluate(self):
@@ -167,15 +172,13 @@ class Workspace(object):
             #if self.using_surf:
             #    labeled_queries = self.reward_model.disagreement_sampling_surf()
             #else:
-                #labeled_queries = self.reward_model.uniform_sampling()
             labeled_queries = self.reward_model.uniform_sampling()
+            #labeled_queries = self.reward_model.disagreement_sampling()
 
         else:
-            if self.using_surf:
-                labeled_queries = self.reward_model.disagreement_sampling_surf()
-            elif self.cfg.feed_type == 0:
+            if True:
                 labeled_queries = self.reward_model.uniform_sampling()
-            elif True:
+            elif False:
                 labeled_queries = self.reward_model.disagreement_sampling()
             elif self.cfg.feed_type == 2:
                 labeled_queries = self.reward_model.entropy_sampling()
@@ -372,7 +375,7 @@ class Workspace(object):
             custom_reward = self.get_custom_reward(next_obs, action)
             episode_custom_reward += custom_reward
 
-            if not first_time_double_training:
+            if not first_time_double_training and False:
                 reward += custom_reward
             
             if self.log_success:
@@ -390,19 +393,19 @@ class Workspace(object):
             interact_count += 1
             if self.step % 120000 == 0:
 
-                self.agent.save("/root/code/rl_zoo/", self.step)
-                self.reward_model.save("/root/code/rl_zoo/", self.step)
+                self.agent.save("/home/mambauser/code/rl_zoo3/", self.step)
+                self.reward_model.save("/home/mambauser/code/rl_zoo3/", self.step)
 
                 if wandb:
                     print("saving wandb")
-                    wandb.save(f'/root/code/rl_zoo/*.pt')
+                    wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
 
             
         self.agent.save(self.work_dir, self.step)
         self.reward_model.save(self.work_dir, self.step)
         if wandb:
             print("saving wandb")
-            wandb.save(f'/root/code/rl_zoo/*.pt')
+            wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
 
     def get_custom_reward(self, observation, action=None):
         if self.env_name == "walker_walk":

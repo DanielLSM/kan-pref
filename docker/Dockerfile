@@ -74,4 +74,19 @@ RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && \
     pip install -U gym==0.23.0
     #pip install setuptools==65.5.0 pip==21 && pip install wheel==0.38.0 && pip install gym==0.19.0
     #pip install gym==0.19.0 #&& pip install numpy==1.20.1
-CMD /bin/bash
+RUN echo "hej"
+
+USER root
+#RUN ln -s /usr/bin/python3 /usr/bin/python
+COPY . /home/mambauser/code/rl_zoo3
+COPY docker/entrypoint.sh /tmp/
+RUN chmod -R +x /home/mambauser/code/rl_zoo3
+USER $MAMBA_USER
+#ENTRYPOINT ["/bin/bash", "-c", "cd /home/mambauser/code/rl_zoo3/ && ./scripts/run_walker_flora.sh"]
+#RUN chmod +x /tmp/entrypoint.sh
+#USER $MAMBA_USER
+#ENTRYPOINT ["/tmp/entrypoint.sh"]
+
+
+
+#CMD /bin/bash
