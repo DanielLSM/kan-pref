@@ -70,7 +70,7 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="a8dd840ee7e392351881c44f60d2d22d7c3a1352")
+        wandb.login(key="asdasd")
         run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
@@ -375,7 +375,7 @@ class Workspace(object):
             custom_reward = self.get_custom_reward(next_obs, action)
             episode_custom_reward += custom_reward
 
-            if not first_time_double_training:
+            if not first_time_double_training and False:
                 reward += custom_reward
             
             if self.log_success:

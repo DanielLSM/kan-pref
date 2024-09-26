@@ -18,7 +18,7 @@ from kan import KAN
 from scipy.stats import norm
 import copy
 
-device = 'cuda'
+device = 'cpu'
 
 def gen_net(in_size=1, out_size=1, H=128, n_layers=3, activation='tanh', use_lora=False, rank=16, lora_alpha=16):
     net = []
