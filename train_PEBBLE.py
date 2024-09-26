@@ -70,7 +70,7 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="asdasd")
+        wandb.login(key="as")
         run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
@@ -393,19 +393,19 @@ class Workspace(object):
             interact_count += 1
             if self.step % 120000 == 0:
 
-                self.agent.save("/root/code/rl_zoo/", self.step)
-                self.reward_model.save("/root/code/rl_zoo/", self.step)
+                self.agent.save("/home/mambauser/code/rl_zoo3/", self.step)
+                self.reward_model.save("/home/mambauser/code/rl_zoo3/", self.step)
 
                 if wandb:
                     print("saving wandb")
-                    wandb.save(f'/root/code/rl_zoo/*.pt')
+                    wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
 
             
         self.agent.save(self.work_dir, self.step)
         self.reward_model.save(self.work_dir, self.step)
         if wandb:
             print("saving wandb")
-            wandb.save(f'/root/code/rl_zoo/*.pt')
+            wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
 
     def get_custom_reward(self, observation, action=None):
         if self.env_name == "walker_walk":
