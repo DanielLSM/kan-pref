@@ -13,6 +13,6 @@ figures
 molecule
 outputs
 exp
-
+# wandb
 #my ignores
 model
