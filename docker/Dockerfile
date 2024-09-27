@@ -50,7 +50,8 @@ RUN \
     pip install highway-env>=1.7.1 && \
     pip install git+https://github.com/rlworkgroup/metaworld.git@04be337a12305e393c0caf0cbf5ec7755c7c8feb && \
     pip install 'cython<3' && \
-    pip install -U gym==0.26.2 && pip install mujoco==2.3.3 && \
+    # pip install -U gym==0.26.2 && pip install mujoco==2.3.3 && \
+    pip install -U gym==0.23.0 && pip install mujoco==2.3.3 && \
     pip cache purge
 
 RUN mkdir -p /home/mambauser/.mujoco \
@@ -72,7 +73,7 @@ RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && pip i
 RUN git config --global --add safe.directory /home/mambauser/code/rl_zoo3
 RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && \
     # pip install -U gym==0.23.0
-    # pip install -U gym==0.23.0
+    pip install -U gym==0.23.0
     #pip install setuptools==65.5.0 pip==21 && pip install wheel==0.38.0 && pip install gym==0.19.0
     #pip install gym==0.19.0 #&& pip install numpy==1.20.1
 RUN echo "hej"

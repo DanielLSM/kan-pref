@@ -81,7 +81,7 @@ class Workspace(object):
         run = wandb.init(
             name=run_name,
             project="PrefLearn",
-            entity="dlsmarta",
+            entity="sholk",
             config=config,
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
             monitor_gym=True  # auto-upload the videos of agents playing the game

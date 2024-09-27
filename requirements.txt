@@ -1,4 +1,4 @@
-gym==0.26.2
+# gym==0.26.2
 stable-baselines3[extra_no_roms,tests,docs]>=2.0.0a4
 sb3-contrib>=2.0.0a4
 box2d-py==2.3.8
@@ -26,5 +26,15 @@ scikit-image
 hydra-core==0.11.0
 librosa==0.7.2 
 omegaconf==1.4.1
-gym==0.26.2
-git+https://github.com/denisyarats/dmc2gym.git
+gym==0.23.0
+# git+https://github.com/denisyarats/dmc2gym.gitP
+
+matplotlib==3.6.2
+numpy==1.24.4
+scikit_learn==1.1.3
+setuptools==65.5.0
+sympy==1.11.1
+tqdm==4.66.2
+PyYAML==6.0.2
+# pandas==2.2.2
+#torch==2.2.2

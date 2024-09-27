@@ -1,9 +1,9 @@
 #!/bin/bash
 export USE_GPU=False  # or False if you want to use CPU
-export RELEASE=False  # or False if you don't want to push the image
+export RELEASE=True  # or False if you don't want to push the image
 PARENT=stablebaselines/stable-baselines3
 
-TAG=sholk/rl-baselines3-new
+TAG=dlsm666/rl-baselines3-new
 VERSION=2.2.0a1
 
 if [[ ${USE_GPU} == "True" ]]; then
