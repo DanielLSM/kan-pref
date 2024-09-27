@@ -16,4 +16,4 @@ exp
 wandb
 #my ignores
 model
-*.key
+api_keys.key
