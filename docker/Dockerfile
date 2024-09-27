@@ -59,11 +59,11 @@ RUN mkdir -p /home/mambauser/.mujoco \
     && rm mujoco.tar.gz
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/mambauser/.mujoco/mujoco210/bin
 
-COPY requirementspebble.txt /tmp/
-RUN \
-    eval "$(micromamba shell hook --shell bash)" && \
-    micromamba activate && \
-    pip install -r /tmp/requirementspebble.txt
+# COPY requirementspebble.txt /tmp/
+# RUN \
+#     eval "$(micromamba shell hook --shell bash)" && \
+#     micromamba activate && \
+#     pip install -r /tmp/requirementspebble.txt
 
 RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && pip install -U gymnasium==0.28 && \
     pip install -U protobuf==3.20.1 && pip install git+https://github.com/denisyarats/dmc2gym.git && \
@@ -71,7 +71,8 @@ RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && pip i
 
 RUN git config --global --add safe.directory /home/mambauser/code/rl_zoo3
 RUN eval "$(micromamba shell hook --shell bash)" && micromamba activate && \
-    pip install -U gym==0.23.0
+    # pip install -U gym==0.23.0
+    # pip install -U gym==0.23.0
     #pip install setuptools==65.5.0 pip==21 && pip install wheel==0.38.0 && pip install gym==0.19.0
     #pip install gym==0.19.0 #&& pip install numpy==1.20.1
 RUN echo "hej"

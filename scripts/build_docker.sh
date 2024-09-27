@@ -1,5 +1,6 @@
 #!/bin/bash
-
+export USE_GPU=False  # or False if you want to use CPU
+export RELEASE=False  # or False if you don't want to push the image
 PARENT=stablebaselines/stable-baselines3
 
 TAG=sholk/rl-baselines3-new

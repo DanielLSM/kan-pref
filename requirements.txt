@@ -26,4 +26,5 @@ scikit-image
 hydra-core==0.11.0
 librosa==0.7.2 
 omegaconf==1.4.1
-gym==0.23.0
+gym==0.26.2
+git+https://github.com/denisyarats/dmc2gym.git
