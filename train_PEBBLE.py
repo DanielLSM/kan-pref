@@ -15,7 +15,8 @@ from datetime import datetime
 
 from logger import Logger
 from replay_buffer import ReplayBuffer
-from kan_reward_model import RewardModel
+from kan_reward_model import RewardModel as RewardModelKAN
+from reward_model import RewardModel as RewardModelMLP
 from collections import deque
 
 import utils
@@ -70,8 +71,8 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="a8dd840ee7e392351881c44f60d2d22d7c3a1352")
-        run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
+        wandb.login(key="062e6f1457bb47fd3c8c6b4aa043be1dd78e06b3")
+        run_name = f"{cfg.env}__{date_time}__{cfg.seed}"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
                   "param_k": cfg.k,
@@ -81,7 +82,7 @@ class Workspace(object):
         run = wandb.init(
             name=run_name,
             project="PrefLearn",
-            entity="sholk",
+            entity="dlsmarta",
             config=config,
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
             monitor_gym=True  # auto-upload the videos of agents playing the game
@@ -91,29 +92,49 @@ class Workspace(object):
         print(cfg.grid)
         print(type(cfg.grid))
         # instantiating the reward model
-        self.reward_model = RewardModel(
-            self.env.observation_space.shape[0],
-            self.env.action_space.shape[0],
-            ensemble_size=cfg.ensemble_size,
-            size_segment=cfg.segment,
-            activation=cfg.activation, 
-            lr=cfg.reward_lr,
-            mb_size=cfg.reward_batch, 
-            large_batch=cfg.large_batch, 
-            label_margin=cfg.label_margin, 
-            teacher_beta=cfg.teacher_beta, 
-            teacher_gamma=cfg.teacher_gamma, 
-            teacher_eps_mistake=cfg.teacher_eps_mistake, 
-            teacher_eps_skip=cfg.teacher_eps_skip, 
-            teacher_eps_equal=cfg.teacher_eps_equal,
-            pretrained_model=self.pretrained_model,
-            use_lora=self.use_lora,
-            rank=cfg.rank,
-            model_name=self.model_name,
-            width=cfg.width,
-            grid=cfg.grid,
-            k=cfg.k,
-            model_path=cfg.model_path)
+        if cfg.reward_model == "KAN":
+            self.reward_model = RewardModelKAN(
+                self.env.observation_space.shape[0],
+                self.env.action_space.shape[0],
+                ensemble_size=cfg.ensemble_size,
+                size_segment=cfg.segment,
+                activation=cfg.activation, 
+                lr=cfg.reward_lr,
+                mb_size=cfg.reward_batch, 
+                large_batch=cfg.large_batch, 
+                label_margin=cfg.label_margin, 
+                teacher_beta=cfg.teacher_beta, 
+                teacher_gamma=cfg.teacher_gamma, 
+                teacher_eps_mistake=cfg.teacher_eps_mistake, 
+                teacher_eps_skip=cfg.teacher_eps_skip, 
+                teacher_eps_equal=cfg.teacher_eps_equal,
+                pretrained_model=self.pretrained_model,
+                rank=cfg.rank,
+                model_name=self.model_name,
+                width=cfg.width,
+                grid=cfg.grid,
+                k=cfg.k,
+                model_path=cfg.model_path)
+        elif cfg.reward_model == "MLP":
+            self.reward_model = RewardModelMLP(
+                self.env.observation_space.shape[0],
+                self.env.action_space.shape[0],
+                ensemble_size=cfg.ensemble_size,
+                lr=cfg.reward_lr,
+                mb_size=cfg.reward_batch,
+                activation=cfg.activation,
+                large_batch=cfg.large_batch,
+                label_margin=cfg.label_margin,
+                teacher_beta=cfg.teacher_beta,
+                teacher_gamma=cfg.teacher_gamma,
+                teacher_eps_mistake=cfg.teacher_eps_mistake,
+                teacher_eps_skip=cfg.teacher_eps_skip,
+                teacher_eps_equal=cfg.teacher_eps_equal,
+                pretrained_model=self.pretrained_model,
+                use_lora=cfg.use_lora,
+                rank=cfg.rank,
+                model_name=self.model_name,
+                model_path=cfg.model_path)
         
     def evaluate(self):
         average_episode_reward = 0
@@ -163,33 +184,24 @@ class Workspace(object):
                         self.step)
         self.logger.dump(self.step)
     
-    def learn_reward(self, first_flag=0):
+    def learn_reward(self):
                 
         # get feedbacks
         labeled_queries, noisy_queries = 0, 0
-        if first_flag == 1:
-            # if it is first time to get feedback, need to use random sampling
-            #if self.using_surf:
-            #    labeled_queries = self.reward_model.disagreement_sampling_surf()
-            #else:
+        if self.cfg.feed_type == 0:
             labeled_queries = self.reward_model.uniform_sampling()
-            #labeled_queries = self.reward_model.disagreement_sampling()
-
+        elif self.cfg.feed_type == 1:
+            labeled_queries = self.reward_model.disagreement_sampling()
+        elif self.cfg.feed_type == 2:
+            labeled_queries = self.reward_model.entropy_sampling()
+        elif self.cfg.feed_type == 3:
+            labeled_queries = self.reward_model.kcenter_sampling()
+        elif self.cfg.feed_type == 4:
+            labeled_queries = self.reward_model.kcenter_disagree_sampling()
+        elif self.cfg.feed_type == 5:
+            labeled_queries = self.reward_model.kcenter_entropy_sampling()
         else:
-            if True:
-                labeled_queries = self.reward_model.uniform_sampling()
-            elif False:
-                labeled_queries = self.reward_model.disagreement_sampling()
-            elif self.cfg.feed_type == 2:
-                labeled_queries = self.reward_model.entropy_sampling()
-            elif self.cfg.feed_type == 3:
-                labeled_queries = self.reward_model.kcenter_sampling()
-            elif self.cfg.feed_type == 4:
-                labeled_queries = self.reward_model.kcenter_disagree_sampling()
-            elif self.cfg.feed_type == 5:
-                labeled_queries = self.reward_model.kcenter_entropy_sampling()
-            else:
-                raise NotImplementedError
+            raise NotImplementedError
         
         self.total_feedback += self.reward_model.mb_size
         self.labeled_feedback += labeled_queries
@@ -307,7 +319,7 @@ class Workspace(object):
                 self.reward_model.set_teacher_thres_equal(new_margin)
                 
                 # first learn reward
-                self.learn_reward(first_flag=1)
+                self.learn_reward()
                 first_time_double_training = False
                 # relabel buffer
                 self.replay_buffer.relabel_with_predictor(self.reward_model)
@@ -391,7 +403,7 @@ class Workspace(object):
             episode_step += 1
             self.step += 1
             interact_count += 1
-            if self.step >= 10000000:  #Never save model
+            if self.step % 120000 == 0:
 
                 self.agent.save("/home/mambauser/code/rl_zoo3/", self.step)
                 self.reward_model.save("/home/mambauser/code/rl_zoo3/", self.step)

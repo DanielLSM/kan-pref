@@ -314,7 +314,7 @@ class RewardModel:
 
         return np.mean(r_hats, axis=0)
     
-    def save(self, model_dir, step, save_lora=True):
+    def save(self, model_dir, step, save_lora=False):
         for member in range(self.de):
             torch.save(
                 self.ensemble[member].state_dict(), '%s/reward_model_%s_%s.pt' % (model_dir, step, member)

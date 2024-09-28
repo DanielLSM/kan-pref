@@ -17,3 +17,4 @@ wandb
 #my ignores
 model
 api_keys.key
+docker_logs

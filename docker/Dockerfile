@@ -39,6 +39,7 @@ RUN apt-get update \
 USER $MAMBA_USER
 
 ENV CODE_DIR /home/$MAMBA_USER/code
+RUN chmod -R 777 /home/mambauser/code/rl_zoo3
 COPY requirements.txt /tmp/
 
 RUN \
@@ -82,7 +83,9 @@ COPY . /home/mambauser/code/rl_zoo3
 COPY docker/entrypoint.sh /tmp/
 ENV PATH="/opt/conda/envs/base/bin:$PATH"
 RUN echo "PATH: $PATH"
-#RUN chmod -R +x /home/mambauser/code/rl_zoo3
+#was commented out
+# RUN chmod -R +x /home/mambauser/code/rl_zoo3 
+
 # Copy and set entrypoint
 
 
