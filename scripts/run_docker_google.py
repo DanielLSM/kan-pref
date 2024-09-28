@@ -4,14 +4,14 @@ from google.cloud.batch_v1 import Job, TaskGroup, TaskSpec, Runnable, Allocation
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Set your parameters
-project_id = 'psychiads705-q8'
+project_id = 'ownproject'
 region = 'us-central1'  # Replace with your preferred region
 parent = f'projects/{project_id}/locations/{region}'
 
 # Use the image from Google Container Registry if you pushed it there
 # container_image = f'gcr.io/{project_id}/rl-baselines3-new-cpu:2.2.0a1'
 # Or use the Docker Hub image directly
-container_image = 'docker.io/sholk/rl-baselines3-new-cpu:2.2.0a1'
+container_image = 'docker.io/sholk/rl-baselines3-final-cpu:1.0.4'
 
 
 # Define your commands

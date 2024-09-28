@@ -85,17 +85,17 @@ RUN echo "PATH: $PATH"
 
 
 # Activate micromamba by default
-#RUN echo 'eval "$(micromamba shell hook --shell=bash)"' >> ~/.bashrc && \
-#    echo 'micromamba activate' >> ~/.bashrc
+RUN echo 'eval "$(micromamba shell hook --shell=bash)"' >> ~/.bashrc && \
+    echo 'micromamba activate' >> ~/.bashrc
 
 
 
 #ENTRYPOINT ["/bin/bash", "-c", "cd /home/mambauser/code/rl_zoo3/ && ./scripts/run_walker_flora.sh"]
-USER root
-RUN chmod +x /tmp/entrypoint.sh
-USER $MAMBA_USER
-ENTRYPOINT ["/tmp/entrypoint.sh"]
+#USER root
+#RUN chmod +x /tmp/entrypoint.sh
+#USER $MAMBA_USER
+#ENTRYPOINT ["/tmp/entrypoint.sh"]
 
 
 
-#CMD /bin/bash
+CMD /bin/bash
