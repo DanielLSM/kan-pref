@@ -3,6 +3,8 @@ defaults:
     
 # this needs to be specified manually
 experiment: PEBBLE
+reward_model: KAN
+ablation: main_learning
 
 # reward learning
 segment: 50 #60 for surf / 50 for rest
@@ -30,7 +32,6 @@ teacher_eps_equal: 0
 pretrained_model: false
 use_lora: false
 lora_alpha: 16
-reward_model: KAN
 model_name: walker_reward_model
 model_path: /root/code/rl_zoo
 rank: 16
@@ -49,12 +50,15 @@ num_train_steps: 1e6
 replay_buffer_capacity: ${num_train_steps}
 
 # evaluation config
-eval_frequency: 10000
+# eval_frequency: 10000
+eval_frequency: 5000
+
 num_eval_episodes: 20
 device: cpu
 
 # logger
-log_frequency: 10000
+# log_frequency: 10000
+log_frequency: 2500
 log_save_tb: true
 
 # video recorder
@@ -66,6 +70,13 @@ seed: 1
 # Environment
 env: dog_stand
 gradient_update: 1
+
+# hydra configuration
+# hydra:
+#     name: hydra
+#     run:
+#         dir: ./docker_logs/${ablation}/${env}/${reward_model}/${seed}
+# self.work_dir = os.path.join(os.getcwd(), 'docker_logs', cfg.env, cfg.reward_model, str(cfg.seed))
 
 # hydra configuration
 hydra:

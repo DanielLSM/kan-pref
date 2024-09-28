@@ -23,7 +23,7 @@ import utils
 import hydra
 class Workspace(object):
     def __init__(self, cfg):
-        self.work_dir = os.getcwd()
+        self.work_dir = os.path.join(os.getcwd(), 'docker_logs', cfg.ablation, cfg.env, cfg.reward_model, str(cfg.seed))
         print(f'workspace: {self.work_dir}')
 
         self.cfg = cfg
@@ -183,7 +183,7 @@ class Workspace(object):
                         self.step)
         self.logger.dump(self.step)
     
-    def learn_reward(self, first_flag=0):
+    def learn_reward(self):
                 
         # get feedbacks
         labeled_queries, noisy_queries = 0, 0
@@ -318,7 +318,7 @@ class Workspace(object):
                 self.reward_model.set_teacher_thres_equal(new_margin)
                 
                 # first learn reward
-                self.learn_reward(first_flag=1)
+                self.learn_reward()
                 first_time_double_training = False
                 # relabel buffer
                 self.replay_buffer.relabel_with_predictor(self.reward_model)
