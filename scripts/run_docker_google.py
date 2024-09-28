@@ -4,19 +4,20 @@ from google.cloud.batch_v1 import Job, TaskGroup, TaskSpec, Runnable, Allocation
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Set your parameters
-project_id = 'yourprojectidongoogle'
+project_id = 'ownproject'
 region = 'us-central1'  # Replace with your preferred region
 parent = f'projects/{project_id}/locations/{region}'
 
 # Use the image from Google Container Registry if you pushed it there
+# container_image = f'gcr.io/{project_id}/rl-baselines3-new-cpu:2.2.0a1'
 # Or use the Docker Hub image directly
-container_image = 'docker.io/url/owndocker'
+container_image = 'docker.io/sholk/rl-baselines3-final-cpu:1.0.4'
 
 
 # Define your commands
 commands = [
     #["bash", "-c", "cd /home/mambauser/code/rl_zoo3/ && ls && whoami && python3 train_PEBBLE.py env=metaworld_drawer-close-v2 seed=1 model_name=drawer_close_reward_model agent.params.actor_lr=0.0005 agent.params.critic_lr=0.0005 gradient_update=1 activation=tanh num_unsup_steps=9000 num_train_steps=500000 num_interact=10000 max_feedback=500 reward_batch=25 reward_update=50 feed_type= teacher_beta=-1 teacher_gamma=1 teacher_eps_mistake=0.1 teacher_eps_skip=0 teacher_eps_equal=0 width=[4,4,4] k=4 grid=4"]
-    ["/bin/bash", "-c", "cd /home/mambauser/code/rl_zoo3/ && ls && ./scripts/run_walker_flora.sh"],
+    ["/bin/bash", "-c", 'cd /home/mambauser/code/rl_zoo3/ && ./scripts/run_walker_flora8.sh']
     # Add more commands as needed
 ]
 index_file_path = "container_index.txt"
@@ -27,8 +28,7 @@ def create_job(command, job_name):
     container = Runnable.Container(
         image_uri=container_image,
         entrypoint=command[0],
-        commands=command[1:],
-        options='--network host'  # Add any Docker run options if needed
+        commands=command[1:]
     )
 
     # Define the runnable
