@@ -30,6 +30,7 @@ teacher_eps_equal: 0
 pretrained_model: false
 use_lora: false
 lora_alpha: 16
+reward_model: KAN
 model_name: walker_reward_model
 model_path: /root/code/rl_zoo
 rank: 16
@@ -39,7 +40,7 @@ width: [1,1,1]
 grid: 3
 k: 3
 
-using_surf: true
+using_surf: false
 
 # scheduling
 reward_schedule: 0

@@ -22,7 +22,12 @@ echo $(pwd)
 
 
 docker run -it --user=root --ipc=host \
-  --mount src=/home/daniel/dev/kan-pref/docker_experiments,target=/home/mambauser/code/rl_zoo3,type=bind \
-  dlsm666/rl-baselines3-new-cpu:latest\
- bash -c "cd /home/mambauser/code/rl_zoo3/ && $cmd_line"
+  dlsm666/rl-baselines3-new-cpu:latest \
+  bash -c "cd /home/mambauser/code/rl_zoo3/ && exec bash"
+
+
+# docker run -it --user=root --ipc=host \
+#   --mount src=/home/daniel/dev/kan-pref/docker_experiments,target=/home/mambauser/code/rl_zoo3,type=bind \
+#   dlsm666/rl-baselines3-new-cpu:latest\
+#  bash -c "cd /home/mambauser/code/rl_zoo3/ && $cmd_line"
 # sleep 10
