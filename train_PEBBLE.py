@@ -70,7 +70,7 @@ class Workspace(object):
         currTime = datetime.now()
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
-        wandb.login(key="as")
+        wandb.login(key="a8dd840ee7e392351881c44f60d2d22d7c3a1352")
         run_name = f"{cfg.env}__{date_time}__{cfg.seed}_speed_only"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
@@ -391,7 +391,7 @@ class Workspace(object):
             episode_step += 1
             self.step += 1
             interact_count += 1
-            if self.step % 120000 == 0:
+            if self.step >= 10000000:  #Never save model
 
                 self.agent.save("/home/mambauser/code/rl_zoo3/", self.step)
                 self.reward_model.save("/home/mambauser/code/rl_zoo3/", self.step)
