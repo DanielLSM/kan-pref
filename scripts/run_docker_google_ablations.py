@@ -15,10 +15,10 @@ container_image = 'docker.io/dlsm666/kan-pref-cpu:latest'
 
 # Define different arguments for commands
 different_args = {
-    'seeds': [1,2,3,4],  # Example arguments to vary
+    'seeds': [1,2,3,4,5],  # Example arguments to vary
     'environments': ['metaworld_drawer-close-v2'],  # Different environments
     'reward_models': ['KAN'],  # Changed reward models
-    'widths': [[4, 4, 4]],  # Different widths
+    'widths': [[2,2],[4,4],[8,8],[16,16],[32,32]],  # Different widths
     'k': [3],  # Repeat for k
     'grid': [3]  # Repeat for grid
 }
@@ -67,7 +67,7 @@ def create_job(command, job_name):
     task_spec = TaskSpec(
         runnables=[runnable],
         max_retry_count=0,  # Set retries if needed
-        max_run_duration={"seconds": 3600 * 48}  # Max run duration of 48 hours
+        max_run_duration={"seconds": 3600 * 72}  # Max run duration of 72 hours
     )
 
     # Define the task group
@@ -76,12 +76,12 @@ def create_job(command, job_name):
         task_count=1  # Number of tasks to run in parallel
     )
 
-    # Define the allocation policy
+    # Define the allocation policy with more vCPUs per task
     allocation_policy = AllocationPolicy(
         instances=[
             AllocationPolicy.InstancePolicyOrTemplate(
                 policy=AllocationPolicy.InstancePolicy(
-                    machine_type='e2-standard-4'  # Adjust machine type as needed
+                    machine_type='e2-standard-8'  # Adjusted machine type for more vCPUs
                 )
             )
         ]
