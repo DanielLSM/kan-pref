@@ -36,9 +36,6 @@ RUN apt-get update \
   && apt-get install -y patchelf \
   && rm -rf /var/lib/apt/lists/*
 
-# Grant $MAMBA_USER root privileges
-RUN usermod -aG root $MAMBA_USER
-
 USER $MAMBA_USER
 
 ENV CODE_DIR /home/$MAMBA_USER/code

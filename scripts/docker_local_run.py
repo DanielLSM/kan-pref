@@ -34,7 +34,7 @@ base_command = (
 docker_image = "dlsm666/kan-pref-cpu:latest"
 
 different_args = {
-    'seed': [1,2],  # Example arguments to vary
+    'seed': [1],  # Example arguments to vary
     'environment': ['metaworld_drawer-close-v2'],  # Different environments
     'reward_model': ['KAN'],  # Changed reward models
     'width': [4, 4, 4],
@@ -58,7 +58,7 @@ for seed in different_args['seed']:
             commands.append(command)
 
 def run_docker(command):
-    os.system(f"docker run --user root --rm {docker_image} bash -c '{command}'")  # Added bash -c
+    os.system(f"docker run --rm {docker_image} bash -c '{command}'")  # Added bash -c
 
 def main():
     with ThreadPoolExecutor(max_workers=len(commands)) as executor:
