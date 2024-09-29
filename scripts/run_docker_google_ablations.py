@@ -13,15 +13,39 @@ parent = f'projects/{project_id}/locations/{region}'
 # Or use the Docker Hub image directly
 container_image = 'docker.io/sholk/rl-baselines3-final-cpu:1.0.4'
 
+# Define different arguments for commands
+different_args = {
+    'seeds': [1],  # Example arguments to vary
+    'environments': ['metaworld_drawer-close-v2'],  # Different environments
+    'reward_models': ['KAN'],  # Changed reward models
+    'widths': [[4, 4, 4]],  # Different widths
+    'k': [3],
+    'grid': [3]
+}
 
-# Define your commands
-commands = [
-    #["bash", "-c", "cd /home/mambauser/code/rl_zoo3/ && ls && whoami && python3 train_PEBBLE.py env=metaworld_drawer-close-v2 seed=1 model_name=drawer_close_reward_model agent.params.actor_lr=0.0005 agent.params.critic_lr=0.0005 gradient_update=1 activation=tanh num_unsup_steps=9000 num_train_steps=500000 num_interact=10000 max_feedback=500 reward_batch=25 reward_update=50 feed_type= teacher_beta=-1 teacher_gamma=1 teacher_eps_mistake=0.1 teacher_eps_skip=0 teacher_eps_equal=0 width=[4,4,4] k=4 grid=4"]
-    ["/bin/bash", "-c", 'cd /home/mambauser/code/rl_zoo3/ && ./scripts/run_walker_flora8.sh']
-    # Add more commands as needed
-]
+# Generate commands based on different arguments
+commands = []
+for seed in different_args['seeds']:
+    for env in different_args['environments']:
+        for reward in different_args['reward_models']:
+            for width in different_args['widths']:
+                command = [
+                    "/bin/bash", "-c", 
+                    f'cd /home/mambauser/code/rl_zoo3/ && python3 train_PEBBLE.py '
+                    f'env={env} seed={seed} reward_model={reward} '
+                    f'agent.params.actor_lr=0.0005 agent.params.critic_lr=0.0005 '
+                    f'gradient_update=1 activation=tanh num_unsup_steps=9000 '
+                    f'num_train_steps=500000 num_interact=10000 max_feedback=500 '
+                    f'reward_batch=25 reward_update=50 feed_type= '
+                    f'teacher_beta=-1 teacher_gamma=1 teacher_eps_mistake=0.1 '
+                    f'teacher_eps_skip=0 teacher_eps_equal=0 '
+                    f'width={width} k={different_args["k"][0]} grid={different_args["grid"][0]}'
+                ]
+                commands.append(command)
+
 # This file is used to keep track of container job indices for Google Cloud Batch jobs.
 index_file_path = "container_index.txt"
+
 def create_job(command, job_name):
     client = batch_v1.BatchServiceClient()
 
@@ -87,7 +111,6 @@ def read_index():
 def update_index(new_index):
     with open(index_file_path, 'w') as f:
         f.write(str(new_index))
-
 
 def main():
     with ThreadPoolExecutor(max_workers=len(commands)) as executor:
