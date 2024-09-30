@@ -5,7 +5,7 @@ PARENT=stablebaselines/stable-baselines3
 VERSION=2.2.0a1
 
 TAG=dlsm666/kan-pref
-OURVERSION=2.1.0
+OURVERSION=2.5.0
 
 if [[ ${USE_GPU} == "True" ]]; then
   PARENT="${PARENT}:${VERSION}"

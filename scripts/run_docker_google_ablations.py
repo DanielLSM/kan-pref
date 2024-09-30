@@ -14,7 +14,7 @@ parents = [f'projects/{project_id}/locations/{region}' for region in regions]
 # Use the image from Google Container Registry if you pushed it there
 # container_image = f'gcr.io/{project_id}/rl-baselines3-new-cpu:2.2.0a1'
 # Or use the Docker Hub image directly
-container_image = 'docker.io/dlsm666/kan-pref-cpu:2.1.0'
+container_image = 'docker.io/dlsm666/kan-pref-cpu:2.5.0'
 
 # List of different environments to be used in the experiments
 environments = [
@@ -28,11 +28,17 @@ environments = [
 
 # Define different arguments for commands
 different_args = {
-    'seeds': [1],  # Example arguments to vary
-    'environments': ['metaworld_drawer-close-v2'],  # Different environments
+    'seeds': [1,2,3,4,5],  # Example seed values for experiments
+    'environments': [  # List of different environments for testing
+        'metaworld_drawer-close-v2',
+        'metaworld_button-press-v2',
+        'metaworld_button-press-wall-v2',
+        'walker_walk',
+        'cheetah_run',
+        'quadruped_walk'
+    ],
     'reward_models': ['KAN'],  # Changed reward models
-    'widths': [[4,4]],  # Different widths
-    # 'widths': [[4,4],[8,8],[16,16],[32,32]],  # Different widths
+    'widths': [[4, 4],[16,16],[32,32]],  # Different widths
     'k': [3],  # Repeat for k
     'grid': [3]  # Repeat for grid
 }
@@ -106,7 +112,7 @@ def create_job(command, job_name, parent, machine_type):
         instances=[
             AllocationPolicy.InstancePolicyOrTemplate(
                 policy=AllocationPolicy.InstancePolicy(
-                    machine_type=machine_type  # Use the defined machine type
+                    machine_type=machine_type if machine_type != 'custom' else None  # Use the defined machine type or None if custom
                 )
             )
         ]
