@@ -23,10 +23,13 @@ import utils
 import hydra
 class Workspace(object):
     def __init__(self, cfg):
+        self.cfg = cfg
         self.work_dir = os.getcwd()
         print(f'workspace: {self.work_dir}')
 
-        self.cfg = cfg
+        # Set the number of threads for PyTorch to use all available CPU threads
+        torch.set_num_threads(os.cpu_count())
+
         self.logger = Logger(
             self.work_dir,
             save_tb=cfg.log_save_tb,
@@ -72,7 +75,7 @@ class Workspace(object):
         date_time = currTime.strftime("%H:%M:%S-%d/%m/%Y")
 
         wandb.login(key="062e6f1457bb47fd3c8c6b4aa043be1dd78e06b3")
-        run_name = f"{cfg.env}__{date_time}__{cfg.seed}"
+        run_name = f"{cfg.env}__{cfg.ablation}__{cfg.reward_model}__{cfg.seed}__{cfg.width}__{cfg.grid}__{cfg.k}__{date_time}"
         config = {"n_queries": cfg.max_feedback,
                   "env": cfg.env,
                   "param_k": cfg.k,
@@ -81,7 +84,7 @@ class Workspace(object):
 
         run = wandb.init(
             name=run_name,
-            project="PrefLearn",
+            project=f"PrefLearn-{cfg.ablation}",
             entity="dlsmarta",
             config=config,
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
@@ -220,6 +223,7 @@ class Workspace(object):
                     break;
                     
         print("Reward function is updated!! ACC: " + str(total_acc))
+        wandb.log({"metrics/reward_acc": total_acc})
 
     def run(self):
         if wandb.run is not None:
@@ -403,21 +407,24 @@ class Workspace(object):
             episode_step += 1
             self.step += 1
             interact_count += 1
-            if self.step % 120000 == 0:
+            # # if self.step % 120000 == 0: was this
+            # if self.step % 1000 == 0:
 
-                self.agent.save("/home/mambauser/code/rl_zoo3/", self.step)
-                self.reward_model.save("/home/mambauser/code/rl_zoo3/", self.step)
+            #     self.agent.save(save_dir, self.step)
+            #     self.reward_model.save(save_dir, self.step)
 
-                if wandb:
-                    print("saving wandb")
-                    wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
+            #     if wandb:
+            #         print("saving wandb")
+            #         wandb.save(os.path.join(save_dir, '*.pt'))
 
             
-        self.agent.save(self.work_dir, self.step)
-        self.reward_model.save(self.work_dir, self.step)
+        save_dir = os.path.join(self.work_dir, 'saved_models')
+        os.makedirs(save_dir, exist_ok=True)
+        self.agent.save(save_dir, self.step)
+        self.reward_model.save(save_dir, self.step)
         if wandb:
             print("saving wandb")
-            wandb.save(f'/home/mambauser/code/rl_zoo3/*.pt')
+            wandb.save(os.path.join(save_dir, '*.pt'))
 
     def get_custom_reward(self, observation, action=None):
         if self.env_name == "walker_walk":

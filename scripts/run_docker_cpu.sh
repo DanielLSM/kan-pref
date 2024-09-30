@@ -1,7 +1,7 @@
 #!/bin/bash
 # Launch an experiment using the docker cpu image
 cmd_line="$@"
-docker_image=dlsm666/kan-pref-cpu:latest
+docker_image=dlsm666/kan-pref-cpu:2.0.2
 
 echo "Executing in the docker (cpu image):"
 echo $cmd_line
@@ -32,11 +32,11 @@ echo $(pwd)
 # THESE ARE THE ONES WE WANT TO USE
 
 
-# docker run -it --user=root --ipc=host \
-#   $docker_image \
-#   bash -c "cd /home/mambauser/code/rl_zoo3/ && exec bash"
-
-
 docker run -it --user=root --ipc=host \
   $docker_image \
-  bash -c "cd /home/mambauser/code/rl_zoo3/ && $cmd_line"
+  bash -c "cd /home/mambauser/code/rl_zoo3/ && exec bash"
+
+
+# docker run -it --user=root --ipc=host \
+#   $docker_image \
+#   bash -c "cd /home/mambauser/code/rl_zoo3/ && $cmd_line"
