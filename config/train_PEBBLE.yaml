@@ -11,7 +11,7 @@ segment: 50 #60 for surf / 50 for rest
 activation: tanh
 num_seed_steps: 1000
 # num_unsup_steps: 5000 was this
-num_unsup_steps: 1000
+num_unsup_steps: 5000
 num_interact: 5000
 reward_lr: 0.0003
 reward_batch: 128
@@ -52,14 +52,14 @@ replay_buffer_capacity: ${num_train_steps}
 
 # evaluation config
 # eval_frequency: 10000 was this
-eval_frequency: 5000
+eval_frequency: 10000
 
 num_eval_episodes: 20
 device: cpu
 
 # logger
 # log_frequency: 10000 was this
-log_frequency: 2500
+log_frequency: 10000
 log_save_tb: true
 
 # video recorder

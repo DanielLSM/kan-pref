@@ -84,7 +84,7 @@ class Workspace(object):
 
         run = wandb.init(
             name=run_name,
-            project=f"PrefLearn-{cfg.ablation}",
+            project=f"preflearn-{cfg.env}-{cfg.ablation}",  # Updated to include env before ablation
             entity="dlsmarta",
             config=config,
             sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
@@ -245,6 +245,7 @@ class Workspace(object):
 
         first_time_double_training = False  # True to activate co-training
         while self.step < self.cfg.num_train_steps:
+            print("Step: ", self.step)
             if done:
                 if self.step > 0:
                     self.logger.log('train/duration', time.time() - start_time, self.step)
@@ -409,7 +410,8 @@ class Workspace(object):
             interact_count += 1
             # # if self.step % 120000 == 0: was this
             # if self.step % 1000 == 0:
-
+            #     save_dir = os.path.join(self.work_dir, 'saved_models')
+            #     os.makedirs(save_dir, exist_ok=True)
             #     self.agent.save(save_dir, self.step)
             #     self.reward_model.save(save_dir, self.step)
 
