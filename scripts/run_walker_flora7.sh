@@ -10,7 +10,7 @@ python train_PEBBLE_clean.py \
     gradient_update=1 \
     activation=tanh \
     num_unsup_steps=9000 \
-    num_train_steps=500000 \
+    num_train_steps=1000000 \
     num_interact=10000 \
     max_feedback=500 \
     reward_batch=25 \

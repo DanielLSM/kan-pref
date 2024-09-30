@@ -14,7 +14,7 @@ parents = [f'projects/{project_id}/locations/{region}' for region in regions]
 # Use the image from Google Container Registry if you pushed it there
 # container_image = f'gcr.io/{project_id}/rl-baselines3-new-cpu:2.2.0a1'
 # Or use the Docker Hub image directly
-container_image = 'docker.io/dlsm666/kan-pref-cpu:2.0.3'
+container_image = 'docker.io/dlsm666/kan-pref-cpu:2.1.0'
 
 # List of different environments to be used in the experiments
 environments = [
@@ -50,7 +50,7 @@ for seed in different_args['seeds']:
                             f'env={env} seed={seed} reward_model={reward} '
                             f'agent.params.actor_lr=0.0005 agent.params.critic_lr=0.0005 '
                             f'gradient_update=1 activation=tanh num_unsup_steps=9000 '
-                            f'num_train_steps=500000 num_interact=10000 max_feedback=500 '
+                            f'num_train_steps=1000000  num_interact=10000 max_feedback=500 '
                             f'reward_batch=25 reward_update=50 feed_type=0 '
                             f'teacher_beta=-1 teacher_gamma=1 teacher_eps_mistake=0.1 '
                             f'teacher_eps_skip=0 teacher_eps_equal=0 '
